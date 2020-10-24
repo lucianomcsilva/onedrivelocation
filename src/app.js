@@ -53,7 +53,11 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {folderLocation: '/Users/lucianocamilo/OneDrive', syncFolders: []}
-
+    /*
+      local: original path to the files at computer's running app (i.e. /users/johndoe/Documents)
+      remote: path in the <onedrive> local folder (i.e. /users/johndoe/<onedrive>/symlikedfolder/users-johndoe-documents)
+      symLynked:  path to the folder in <ondedrive>/symlinkedfolder/ that contain the files in the cloud (i.e. symlikedfolder/users-johndoe-documents)
+    */
     this.handleOneDriveChange = this.handleOneDriveChange.bind(this);
     window.App = this;
   }  
@@ -67,18 +71,35 @@ export default class App extends React.Component {
 
   handleAddNewFolder = (folderLocation) => {
     console.log(folderLocation);
-    if(folderLocation.length > 1)
+    if(folderLocation.length > 1) {
       this.setState({ syncFolders: [
         ...this.state.syncFolders,
         ...folderLocation
       ]})
-    else  
+      console.log("Adding ", folderLocation.local, "at", folderLocation.remote)
+    }
+    else {
       this.setState({ syncFolders: [
         ...this.state.syncFolders,
-        folderLocation
+        folderLocation 
       ]})
-    console.log("Adding "+folderLocation.remote)
+      //console.log("Adding "+folderLocation.remote)
+      folderLocation.forEach(d => console.log("Adding ", d.local, "at", d.remote))
+    }
   }
+
+  handleRemoveFolder = (folderRemoteLocation) => {
+    //Unlinke Adding, remove folder only accept 1 folder at time
+    //let index  = this.state.syncFolders.findIndex(element => element.remote == folderRemoteLocation)
+    //this.state.syncFolders.splice(index, 1);
+    this.setState({syncFolders: this.state.syncFolders.filter(element => element.remote != folderRemoteLocation)})
+    console.log("Removing " + folderRemoteLocation)
+  }  
+  handleUpdateFolder = (folderRemoteLocation) => {
+    //Unlinke Adding, remove folder only accept 1 folder at time
+    let index  = this.state.syncFolders.findIndex(element => folderLocation.remote == element.remote)
+    console.log("Updating " + index + "," + folderRemoteLocation)
+  }  
 
   render() {
       return (
@@ -92,7 +113,14 @@ export default class App extends React.Component {
                 {this.state.syncFolders.length == 1 && <h2 >One folder in sync</h2>}
                 {this.state.syncFolders.length >  1 && <h2 >{this.state.syncFolders.length} folders in sync</h2>}
               </div>
-              {this.state.syncFolders.map((folderObj) => <SyncedFolder key={folderObj.remote} local={folderObj.local} remote={folderObj.remote} />)}
+              {this.state.syncFolders.map((folderObj) => <SyncedFolder 
+                key={folderObj.remote} 
+                local={folderObj.local} 
+                remote={folderObj.remote} 
+                symLinked={folderObj.symLinked} 
+                onHandleRemoveFolder={this.handleRemoveFolder} 
+                onHandleUpdateFolder={this.handleUpdateFolder}
+              />)}
               
           </Container>  
         </Container>                     

@@ -64,7 +64,7 @@ export default class OneDriveLocation extends React.Component {
       const folders = findUnlinkedFolders(path + "/SymLinkFolder")
       const obj_paths = []
       folders.map(async path =>   { 
-        const obj_path = {local: '', symLinked: path, remote: this.props.folderLocation+'/SymLinkFolder/'+path.replace(/\\|\//g, "-").toLowerCase()}        
+        const obj_path = {local: '', symLinked: path, remote: this.props.folderLocation+'/SymLinkFolder/'+path.replace(/\\|\//g, "-").toLowerCase()}
         obj_paths.push(obj_path);
       });
       window.App.handleAddNewFolder(obj_paths)
