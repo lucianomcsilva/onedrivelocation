@@ -12,3 +12,6 @@ dist/
 
 # Jest Snapshot Folder
 **/__snapshots__/
+
+# vscode
+.vscode
